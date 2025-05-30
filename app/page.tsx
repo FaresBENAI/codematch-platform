@@ -5,11 +5,12 @@ import { User, Building2, Code, Zap, ArrowRight, Check } from 'lucide-react';
 
 export default function CodeMatchHomepage() {
   const [currentView, setCurrentView] = useState('home');
+  
   const [formData, setFormData] = useState({});
-
+  
   const handleLogin = () => {
-    setCurrentView('login');
-  };
+  // Pour tester, on va directement au dashboard
+  window.location.href = '/dashboard';
 
   const handleSignup = () => {
     setCurrentView('userType');

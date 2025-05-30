@@ -2,10 +2,12 @@
 
 import React, { useState } from 'react';
 import { User, Building2, Code, Zap, ArrowRight, Check } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 export default function CodeMatchHomepage() {
   const [currentView, setCurrentView] = useState('home');
   const [formData, setFormData] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = () => {
     setCurrentView('login');
@@ -24,10 +26,73 @@ export default function CodeMatchHomepage() {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e: React.MouseEvent) => {
+  const handleDeveloperSubmit = async (e: React.MouseEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    alert('Inscription réussie ! (En développement)');
+    setIsLoading(true);
+
+    try {
+      const { data, error } = await supabase
+        .from('developers')
+        .insert([
+          {
+            email: formData.email,
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            specialization: formData.specialization,
+            experience: formData.experience,
+            technologies: formData.technologies,
+            portfolio: formData.portfolio
+          }
+        ]);
+
+      if (error) {
+        console.error('Erreur:', error);
+        alert('Erreur lors de l\'inscription: ' + error.message);
+      } else {
+        setCurrentView('success');
+        setFormData({});
+      }
+    } catch (error) {
+      console.error('Erreur:', error);
+      alert('Erreur technique lors de l\'inscription');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCompanySubmit = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const { data, error } = await supabase
+        .from('companies')
+        .insert([
+          {
+            email: formData.email,
+            company_name: formData.companyName,
+            contact_first_name: formData.contactFirstName,
+            contact_last_name: formData.contactLastName,
+            industry: formData.industry,
+            company_size: formData.companySize,
+            needs: formData.needs,
+            website: formData.website
+          }
+        ]);
+
+      if (error) {
+        console.error('Erreur:', error);
+        alert('Erreur lors de l\'inscription: ' + error.message);
+      } else {
+        setCurrentView('success');
+        setFormData({});
+      }
+    } catch (error) {
+      console.error('Erreur:', error);
+      alert('Erreur technique lors de l\'inscription');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Page d'accueil
@@ -95,11 +160,11 @@ export default function CodeMatchHomepage() {
                     <span>Accès à des développeurs IA vérifiés</span>
                   </li>
                   <li className="flex items-center space-x-3">
-                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <Check className="w-5 h-5 text-emerald-500 flex-shrink-0" />
                     <span>Matching intelligent selon vos besoins</span>
                   </li>
                   <li className="flex items-center space-x-3">
-                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <Check className="w-5 h-5 text-emerald-500 flex-shrink-0" />
                     <span>Gestion de projet intégrée</span>
                   </li>
                 </ul>
@@ -112,15 +177,15 @@ export default function CodeMatchHomepage() {
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">Pour les Développeurs</h3>
                 <ul className="text-left space-y-3 text-gray-600">
                   <li className="flex items-center space-x-3">
-                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <Check className="w-5 h-5 text-emerald-500 flex-shrink-0" />
                     <span>Projets IA et automatisation premium</span>
                   </li>
                   <li className="flex items-center space-x-3">
-                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <Check className="w-5 h-5 text-emerald-500 flex-shrink-0" />
                     <span>Rémunération transparente et sécurisée</span>
                   </li>
                   <li className="flex items-center space-x-3">
-                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                    <Check className="w-5 h-5 text-emerald-500 flex-shrink-0" />
                     <span>Portfolio et réputation valorisés</span>
                   </li>
                 </ul>
@@ -157,7 +222,7 @@ export default function CodeMatchHomepage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">Mot de passe</label>
               <input 
                 type="password" 
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                 placeholder="••••••••"
               />
             </div>
@@ -259,7 +324,7 @@ export default function CodeMatchHomepage() {
                   type="text" 
                   required
                   onChange={(e) => handleInputChange('lastName', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                 />
               </div>
             </div>
@@ -270,7 +335,7 @@ export default function CodeMatchHomepage() {
                 type="email" 
                 required
                 onChange={(e) => handleInputChange('email', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
               />
             </div>
             
@@ -279,7 +344,7 @@ export default function CodeMatchHomepage() {
               <select 
                 required
                 onChange={(e) => handleInputChange('specialization', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
               >
                 <option value="">Sélectionnez votre spécialisation</option>
                 <option value="machine-learning">Machine Learning</option>
@@ -295,7 +360,7 @@ export default function CodeMatchHomepage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">Expérience</label>
               <select 
                 onChange={(e) => handleInputChange('experience', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
               >
                 <option value="">Années d'expérience</option>
                 <option value="junior">0-2 ans (Junior)</option>
@@ -310,7 +375,7 @@ export default function CodeMatchHomepage() {
               <textarea 
                 placeholder="Python, TensorFlow, PyTorch, OpenAI API..."
                 onChange={(e) => handleInputChange('technologies', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent h-24"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all h-24"
               />
             </div>
             
@@ -320,15 +385,16 @@ export default function CodeMatchHomepage() {
                 type="url" 
                 placeholder="https://github.com/votreprofil"
                 onChange={(e) => handleInputChange('portfolio', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
               />
             </div>
             
             <button 
-              onClick={handleSubmit}
-              className="w-full py-3 bg-gradient-to-r from-purple-600 to-cyan-500 text-white rounded-lg hover:from-purple-700 hover:to-cyan-600 transition-all transform hover:scale-105 font-medium shadow-lg"
+              onClick={handleDeveloperSubmit}
+              disabled={isLoading}
+              className="w-full py-3 bg-gradient-to-r from-purple-600 to-cyan-500 text-white rounded-lg hover:from-purple-700 hover:to-cyan-600 transition-all transform hover:scale-105 font-medium shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Créer mon profil développeur
+              {isLoading ? 'Création en cours...' : 'Créer mon profil développeur'}
             </button>
           </div>
           
@@ -348,7 +414,7 @@ export default function CodeMatchHomepage() {
   // Formulaire entreprise
   if (currentView === 'companyForm') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-6">
+      <div className="min-h-screen bg-gradient-to-br from-violet-50 via-cyan-50 to-purple-100 py-12 px-6">
         <div className="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl p-8">
           <div className="text-center mb-8">
             <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -365,7 +431,7 @@ export default function CodeMatchHomepage() {
                 type="text" 
                 required
                 onChange={(e) => handleInputChange('companyName', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
               />
             </div>
             
@@ -376,7 +442,7 @@ export default function CodeMatchHomepage() {
                   type="text" 
                   required
                   onChange={(e) => handleInputChange('contactFirstName', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                 />
               </div>
               <div>
@@ -385,7 +451,7 @@ export default function CodeMatchHomepage() {
                   type="text" 
                   required
                   onChange={(e) => handleInputChange('contactLastName', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                 />
               </div>
             </div>
@@ -396,7 +462,7 @@ export default function CodeMatchHomepage() {
                 type="email" 
                 required
                 onChange={(e) => handleInputChange('email', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
               />
             </div>
             
@@ -405,7 +471,7 @@ export default function CodeMatchHomepage() {
               <select 
                 required
                 onChange={(e) => handleInputChange('industry', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
               >
                 <option value="">Sélectionnez votre secteur</option>
                 <option value="tech">Technologies</option>
@@ -422,7 +488,7 @@ export default function CodeMatchHomepage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">Taille de l'entreprise</label>
               <select 
                 onChange={(e) => handleInputChange('companySize', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
               >
                 <option value="">Nombre d'employés</option>
                 <option value="startup">1-10 employés</option>
@@ -437,7 +503,7 @@ export default function CodeMatchHomepage() {
               <textarea 
                 placeholder="Décrivez vos projets ou besoins en Intelligence Artificielle et Automatisation..."
                 onChange={(e) => handleInputChange('needs', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent h-32"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all h-32"
               />
             </div>
             
@@ -447,15 +513,16 @@ export default function CodeMatchHomepage() {
                 type="url" 
                 placeholder="https://votreentreprise.com"
                 onChange={(e) => handleInputChange('website', e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
               />
             </div>
             
             <button 
-              onClick={handleSubmit}
-              className="w-full py-3 bg-gradient-to-r from-purple-600 to-cyan-500 text-white rounded-lg hover:from-purple-700 hover:to-cyan-600 transition-all transform hover:scale-105 font-medium shadow-lg"
+              onClick={handleCompanySubmit}
+              disabled={isLoading}
+              className="w-full py-3 bg-gradient-to-r from-purple-600 to-cyan-500 text-white rounded-lg hover:from-purple-700 hover:to-cyan-600 transition-all transform hover:scale-105 font-medium shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Créer mon profil entreprise
+              {isLoading ? 'Création en cours...' : 'Créer mon profil entreprise'}
             </button>
           </div>
           
@@ -465,6 +532,40 @@ export default function CodeMatchHomepage() {
               className="text-purple-600 hover:text-purple-800 font-medium transition-colors"
             >
               ← Retour au choix du profil
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Page de succès
+  if (currentView === 'success') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-violet-50 via-cyan-50 to-purple-100 flex items-center justify-center px-6">
+        <div className="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full text-center">
+          <div className="w-20 h-20 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Check className="w-10 h-10 text-white" />
+          </div>
+          
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Inscription réussie ! 🎉</h2>
+          <p className="text-gray-600 mb-6">
+            Votre compte a été créé avec succès. Vous allez recevoir un email de confirmation.
+          </p>
+          
+          <div className="space-y-4">
+            <button 
+              onClick={() => setCurrentView('home')}
+              className="w-full py-3 bg-gradient-to-r from-purple-600 to-cyan-500 text-white rounded-lg hover:from-purple-700 hover:to-cyan-600 transition-all transform hover:scale-105 font-medium shadow-lg"
+            >
+              Retour à l'accueil
+            </button>
+            
+            <button 
+              onClick={() => setCurrentView('login')}
+              className="w-full py-3 border border-purple-300 text-purple-600 rounded-lg hover:bg-purple-50 transition-colors font-medium"
+            >
+              Se connecter
             </button>
           </div>
         </div>

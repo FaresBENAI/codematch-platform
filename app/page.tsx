@@ -23,11 +23,11 @@ export default function CodeMatchHomepage() {
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
-
-  const handleSubmit = (e: React.MouseEvent) => {
-    e.preventDefault();
-    console.log('Form submitted:', formData);
-    alert('Inscription réussie ! (En développement)');
+  const handleSubmit = (e) => {
+  e.preventDefault();
+  console.log('Form submitted:', formData);
+  // Redirection vers le dashboard
+  window.location.href = '/dashboard';
   };
 
   // Page d'accueil

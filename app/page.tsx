@@ -2,12 +2,10 @@
 
 import React, { useState } from 'react';
 import { User, Building2, Code, Zap, ArrowRight, Check } from 'lucide-react';
-import { supabase } from '../lib/supabase';
 
 export default function CodeMatchHomepage() {
   const [currentView, setCurrentView] = useState('home');
   const [formData, setFormData] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = () => {
     setCurrentView('login');
@@ -26,73 +24,10 @@ export default function CodeMatchHomepage() {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleDeveloperSubmit = async (e: React.MouseEvent) => {
+  const handleSubmit = (e: React.MouseEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      const { data, error } = await supabase
-        .from('developers')
-        .insert([
-          {
-            email: formData.email,
-            first_name: formData.firstName,
-            last_name: formData.lastName,
-            specialization: formData.specialization,
-            experience: formData.experience,
-            technologies: formData.technologies,
-            portfolio: formData.portfolio
-          }
-        ]);
-
-      if (error) {
-        console.error('Erreur:', error);
-        alert('Erreur lors de l\'inscription: ' + error.message);
-      } else {
-        setCurrentView('success');
-        setFormData({});
-      }
-    } catch (error) {
-      console.error('Erreur:', error);
-      alert('Erreur technique lors de l\'inscription');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleCompanySubmit = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      const { data, error } = await supabase
-        .from('companies')
-        .insert([
-          {
-            email: formData.email,
-            company_name: formData.companyName,
-            contact_first_name: formData.contactFirstName,
-            contact_last_name: formData.contactLastName,
-            industry: formData.industry,
-            company_size: formData.companySize,
-            needs: formData.needs,
-            website: formData.website
-          }
-        ]);
-
-      if (error) {
-        console.error('Erreur:', error);
-        alert('Erreur lors de l\'inscription: ' + error.message);
-      } else {
-        setCurrentView('success');
-        setFormData({});
-      }
-    } catch (error) {
-      console.error('Erreur:', error);
-      alert('Erreur technique lors de l\'inscription');
-    } finally {
-      setIsLoading(false);
-    }
+    console.log('Form submitted:', formData);
+    alert('Inscription réussie ! (En développement)');
   };
 
   // Page d'accueil
@@ -390,11 +325,10 @@ export default function CodeMatchHomepage() {
             </div>
             
             <button 
-              onClick={handleDeveloperSubmit}
-              disabled={isLoading}
-              className="w-full py-3 bg-gradient-to-r from-purple-600 to-cyan-500 text-white rounded-lg hover:from-purple-700 hover:to-cyan-600 transition-all transform hover:scale-105 font-medium shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={handleSubmit}
+              className="w-full py-3 bg-gradient-to-r from-purple-600 to-cyan-500 text-white rounded-lg hover:from-purple-700 hover:to-cyan-600 transition-all transform hover:scale-105 font-medium shadow-lg"
             >
-              {isLoading ? 'Création en cours...' : 'Créer mon profil développeur'}
+              Créer mon profil développeur
             </button>
           </div>
           
@@ -518,11 +452,10 @@ export default function CodeMatchHomepage() {
             </div>
             
             <button 
-              onClick={handleCompanySubmit}
-              disabled={isLoading}
-              className="w-full py-3 bg-gradient-to-r from-purple-600 to-cyan-500 text-white rounded-lg hover:from-purple-700 hover:to-cyan-600 transition-all transform hover:scale-105 font-medium shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={handleSubmit}
+              className="w-full py-3 bg-gradient-to-r from-purple-600 to-cyan-500 text-white rounded-lg hover:from-purple-700 hover:to-cyan-600 transition-all transform hover:scale-105 font-medium shadow-lg"
             >
-              {isLoading ? 'Création en cours...' : 'Créer mon profil entreprise'}
+              Créer mon profil entreprise
             </button>
           </div>
           
@@ -532,40 +465,6 @@ export default function CodeMatchHomepage() {
               className="text-purple-600 hover:text-purple-800 font-medium transition-colors"
             >
               ← Retour au choix du profil
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Page de succès
-  if (currentView === 'success') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-violet-50 via-cyan-50 to-purple-100 flex items-center justify-center px-6">
-        <div className="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full text-center">
-          <div className="w-20 h-20 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Check className="w-10 h-10 text-white" />
-          </div>
-          
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Inscription réussie ! 🎉</h2>
-          <p className="text-gray-600 mb-6">
-            Votre compte a été créé avec succès. Vous allez recevoir un email de confirmation.
-          </p>
-          
-          <div className="space-y-4">
-            <button 
-              onClick={() => setCurrentView('home')}
-              className="w-full py-3 bg-gradient-to-r from-purple-600 to-cyan-500 text-white rounded-lg hover:from-purple-700 hover:to-cyan-600 transition-all transform hover:scale-105 font-medium shadow-lg"
-            >
-              Retour à l'accueil
-            </button>
-            
-            <button 
-              onClick={() => setCurrentView('login')}
-              className="w-full py-3 border border-purple-300 text-purple-600 rounded-lg hover:bg-purple-50 transition-colors font-medium"
-            >
-              Se connecter
             </button>
           </div>
         </div>
